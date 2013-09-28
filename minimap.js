@@ -1,18 +1,4 @@
 var util = {
-  // Support for basic selectors for raw DOM minimap.
-  getElementsBySelector: function(str) {
-    var is_class = str.split('.');
-    var class_name;
-    if ((class_name = is_class.pop()) && is_class.length) {
-      return ['class', class_name, document.getElementsByClassName(class_name)];
-    }
-    var is_id = str.split('#');
-    var id_name;
-    if ((id_name = is_id.pop()) && is_id.length) {
-      return ['id', id_name, [document.getElementById(id_name)]];
-    }
-    return ['tag', str, document.getElementsByTagName(str)];
-  },
   extend: function(dest, source) {
     for (var key in source) {
       if (source.hasOwnProperty(key)) {
@@ -43,7 +29,7 @@ function Minimap(tracked, container, options) {
   this.orientation = 'default';
 
   // Save container.
-  this.container = util.getElementsBySelector(container)[2][0];
+  this.container = document.querySelector(container);
 
   // TODO: options, util extending fn.
   this.options = util.extend({
@@ -68,11 +54,10 @@ function Minimap(tracked, container, options) {
 Minimap.prototype._extractElements = function() {
   for (var i = 0, ii = this.tracked.length; i < ii; i += 1) {
     var identifier = this.tracked[i];
-    var elements = util.getElementsBySelector(identifier);
+    var elements = document.querySelectorAll(identifier);
     var extracted = [];
 
-    this.elements[elements[1]] = extracted;
-    elements = elements[2];
+    this.elements[identifier] = extracted;
 
     for (var j = 0, jj = elements.length; j < jj; j += 1) {
       var el = elements[j];
